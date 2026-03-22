@@ -78,7 +78,28 @@ const migrate = async () => {
       ('SO1', 'Sistemas Operativos 1', 'Conceptos básicos de sistemas operativos', 4),
       ('ED1', 'Estructuras de Datos 1', 'Estructuras de datos fundamentales', 4),
       ('BD1', 'Bases de Datos 1', 'Introducción a bases de datos relacionales', 4),
-      ('LFP', 'Lenguajes Formales y Programación', 'Teoría de compiladores', 4)`
+      ('LFP', 'Lenguajes Formales y Programación', 'Teoría de compiladores', 4)`,
+    `INSERT INTO usuarios (registro_academico, nombres, apellidos, email, password_hash)
+      SELECT '202100001', 'Ana', 'Lopez', 'ana.sis@usac.edu.gt', '$2a$10$zenLQnuvtxu4rsDcYFjN8ugqd61N.ibyvJXUE.eb9iOEOtr5KNHdO'
+      WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE email = 'ana.sis@usac.edu.gt')`,
+    `INSERT INTO usuarios (registro_academico, nombres, apellidos, email, password_hash)
+      SELECT '202100002', 'Luis', 'Perez', 'luis.dev@usac.edu.gt', '$2a$10$zenLQnuvtxu4rsDcYFjN8ugqd61N.ibyvJXUE.eb9iOEOtr5KNHdO'
+      WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE email = 'luis.dev@usac.edu.gt')`,
+    `INSERT INTO usuarios (registro_academico, nombres, apellidos, email, password_hash)
+      SELECT '202100003', 'Maria', 'Garcia', 'maria.code@usac.edu.gt', '$2a$10$zenLQnuvtxu4rsDcYFjN8ugqd61N.ibyvJXUE.eb9iOEOtr5KNHdO'
+      WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE email = 'maria.code@usac.edu.gt')`,
+    `INSERT INTO publicaciones (usuario_id, tipo, referencia_id, contenido)
+      SELECT u.id, 'curso', 1, 'IPC2 me parecio muy util para reforzar logica. El catedratico explica claro y deja tareas semanales.'
+      FROM usuarios u WHERE u.email = 'ana.sis@usac.edu.gt'
+      AND NOT EXISTS (SELECT 1 FROM publicaciones p WHERE p.usuario_id = u.id AND p.tipo = 'curso' AND p.referencia_id = 1)`,
+    `INSERT INTO publicaciones (usuario_id, tipo, referencia_id, contenido)
+      SELECT u.id, 'catedratico', 2, 'El catedratico es exigente pero justo. Recomiendo llevar el curso con buen tiempo para practicar.'
+      FROM usuarios u WHERE u.email = 'luis.dev@usac.edu.gt'
+      AND NOT EXISTS (SELECT 1 FROM publicaciones p WHERE p.usuario_id = u.id AND p.tipo = 'catedratico' AND p.referencia_id = 2)`,
+    `INSERT INTO publicaciones (usuario_id, tipo, referencia_id, contenido)
+      SELECT u.id, 'curso', 4, 'BD1 tiene bastante laboratorio. Si ya manejas SQL basico, se siente mas llevadero.'
+      FROM usuarios u WHERE u.email = 'maria.code@usac.edu.gt'
+      AND NOT EXISTS (SELECT 1 FROM publicaciones p WHERE p.usuario_id = u.id AND p.tipo = 'curso' AND p.referencia_id = 4)`
   ];
 
   for (const query of queries) {
